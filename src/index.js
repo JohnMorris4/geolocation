@@ -1,48 +1,32 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import SeasonDisplay from './SeasonDisplay';
+import Spinner from './Spinner';
 
-// import SeasonDisplay from './SeasonDisplay';
  
 class App extends Component {
-  constructor(props) {
-    // Onetime setup
-    super(props);
+  state = { lat: null, errorMessage: "" };
 
-    this.state = { lat: null, errorMessage: '' };
-    window.navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.setState({ lat: position.coords.latitude });
-      },
-      // ALLWAYS HAVE A CALLBACK TO THE ERR CALLBACK
-      (err) => {
-        this.setState({ errorMessage: err.message });
-      }
-    ); 
-  }
   componentDidMount = () => {
-    console.log('My component was rendered to the screen');
-  }
-
-  componentDidUpdate = () => {
-    console.log('My component did update and rerendered');
-  }
-  
-  
+    window.navigator.geolocation.getCurrentPosition(
+      position => this.setState({ lat: position.coords.latitude }),
+      err => this.setState({ errorMessage: err.message })
+    );
+  };
 
   render() {
     // return JSX
-    if(this.state.errorMessage && !this.state.lat) {
-      return <div>Error: {this.state.errorMessage}</div>
+    if (this.state.errorMessage && !this.state.lat) {
+      return <div>Error: {this.state.errorMessage}</div>;
     }
-    if(!this.state.errorMessage && this.state.lat) {
-      return <div>Latitude: {this.state.lat}</div>
+    if (!this.state.errorMessage && this.state.lat) {
+      return <SeasonDisplay lat= {this.state.lat} />
     }
 
-    return <div>Loading...</div>
-    
+    return (
+      <Spinner />
+    );
   }
-
-
 }
 ReactDOM.render(
   <App />,
